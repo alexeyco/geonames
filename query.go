@@ -29,13 +29,7 @@ func (q Query) FindByPlaceName(placeName string) PlaceNameQuery {
 }
 
 func (q Query) execute(e string, v url.Values) ([]Place, error) {
-	req, err := http.NewRequest("GET", "https://secure.geonames.org/"+e, nil)
-	if err != nil {
-		return []Place{}, err
-	}
-
-	v.Add("username", q.userName)
-	req.URL.RawQuery = v.Encode()
+	req, err := q.request(e, v)
 
 	client := &http.Client{}
 	res, err := client.Do(req)
@@ -59,4 +53,16 @@ func (q Query) execute(e string, v url.Values) ([]Place, error) {
 	}
 
 	return result.Places, nil
+}
+
+func (q Query) request(e string, v url.Values) (*http.Request, error) {
+	req, err := http.NewRequest("GET", Endpoint+e, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	v.Add("username", q.userName)
+	req.URL.RawQuery = v.Encode()
+
+	return req, nil
 }
