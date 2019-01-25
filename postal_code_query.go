@@ -2,6 +2,9 @@ package geonames
 
 import "net/url"
 
+// See http://www.geonames.org/export/web-services.html#postalCodeSearch
+
+// PostalCodeQuery list of postal codes and places for the postal code
 type PostalCodeQuery struct {
 	query               Query
 	postalCode          string
@@ -9,16 +12,19 @@ type PostalCodeQuery struct {
 	countries           []string
 }
 
+// PlaceNameStartsWith sets the first characters of a place name
 func (q PostalCodeQuery) PlaceNameStartsWith(startsWith string) PostalCodeQuery {
 	q.placeNameStartsWith = startsWith
 	return q
 }
 
+// Countries restricts searching by specified countries
 func (q PostalCodeQuery) Countries(countries ...string) PostalCodeQuery {
 	q.countries = countries
 	return q
 }
 
+// Get executes query
 func (q PostalCodeQuery) Get() ([]Place, error) {
 	v := url.Values{}
 	v.Add("postalcode", q.postalCode)
