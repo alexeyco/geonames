@@ -33,6 +33,9 @@ func (q Query) FindByPlaceName(placeName string) PlaceNameQuery {
 
 func (q Query) execute(e string, v url.Values) ([]Place, error) {
 	req, err := q.request(e, v)
+	if err != nil {
+		return []Place{}, err
+	}
 
 	client := &http.Client{}
 	res, err := client.Do(req)
