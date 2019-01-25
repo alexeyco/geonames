@@ -8,10 +8,12 @@ import (
 	"net/url"
 )
 
+// Query API request structure
 type Query struct {
 	userName string
 }
 
+// FindByPostalCode find place by postal code
 func (q Query) FindByPostalCode(postalCode string) PostalCodeQuery {
 	return PostalCodeQuery{
 		query:      q,
@@ -20,6 +22,7 @@ func (q Query) FindByPostalCode(postalCode string) PostalCodeQuery {
 	}
 }
 
+// FindByPlaceName find place by name
 func (q Query) FindByPlaceName(placeName string) PlaceNameQuery {
 	return PlaceNameQuery{
 		query:     q,
