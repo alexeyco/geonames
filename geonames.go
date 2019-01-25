@@ -1,7 +1,7 @@
 package geonames
 
-func New(userName string) QueryBuilder {
-	return QueryBuilder{
+func New(userName string) Query {
+	return Query{
 		userName: userName,
 	}
 }

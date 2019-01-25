@@ -1,7 +1,9 @@
 package geonames
 
+import "net/url"
+
 type PostalCodeQuery struct {
-	builder             QueryBuilder
+	query               Query
 	postalCode          string
 	placeNameStartsWith string
 	countries           []string
@@ -18,5 +20,18 @@ func (q PostalCodeQuery) Countries(countries ...string) PostalCodeQuery {
 }
 
 func (q PostalCodeQuery) Get() ([]Place, error) {
-	return []Place{}, nil
+	v := url.Values{}
+	v.Add("postalcode", q.postalCode)
+
+	if q.placeNameStartsWith != "" {
+		v.Add("placename_startsWith", q.placeNameStartsWith)
+	}
+
+	if len(q.countries) > 0 {
+		for _, c := range q.countries {
+			v.Add("country", c)
+		}
+	}
+
+	return q.query.execute("postalCodeSearchJSON", v)
 }
