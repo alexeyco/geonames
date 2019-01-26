@@ -48,11 +48,8 @@ func (q Query) execute(e string, v url.Values, result interface{}) error {
 		return err
 	}
 
-	if err := xml.Unmarshal(body, &result); err != nil {
-		return err
-	}
-
-	return nil
+	err = xml.Unmarshal(body, &result)
+	return err
 }
 
 func (q Query) request(e string, v url.Values) (*http.Request, error) {
