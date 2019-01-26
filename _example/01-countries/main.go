@@ -17,7 +17,7 @@ func main() {
 
 	log.Println(countryCode)
 
-	// Get country information by country code
+	// Get country information by ISO country code
 	countries, _ := c.CountryInfo("fr", "de").
 		//Lang("fr").  // response language code in ISO-639-1 (en,de,fr,it,es,...), default = english
 		Get()
