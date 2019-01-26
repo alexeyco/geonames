@@ -12,6 +12,15 @@ type Query struct {
 	userName string
 }
 
+// CountryCode returns the iso country code of any given point
+func (q Query) CountryCode(latitude, longitude float32) CountryCodeQuery {
+	return CountryCodeQuery{
+		query:     q,
+		latitude:  latitude,
+		longitude: longitude,
+	}
+}
+
 // CountryInfo returns country information: capital, population, area in square km, bounding Box of mainland
 // (excluding offshore islands); default - all countries
 func (q Query) CountryInfo(countries ...string) CountryInfoQuery {

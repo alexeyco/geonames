@@ -5,6 +5,62 @@ import (
 	"net/url"
 )
 
+type countryCodeResponse struct {
+	response
+	XMLName xml.Name `xml:"geonames"`
+	Country struct {
+		XMLName xml.Name `xml:"country"`
+		Code    string   `xml:"countryCode"`
+	}
+}
+
+// CountryCodeQuery country code query struct,
+// see http://www.geonames.org/export/web-services.html#countrycode
+type CountryCodeQuery struct {
+	query     Query
+	latitude  float32
+	longitude float32
+	lang      string
+	radius    int
+}
+
+// Lang sets response ISO-639-1 language code, default - english
+func (q CountryCodeQuery) Lang(lang string) CountryCodeQuery {
+	q.lang = lang
+	return q
+}
+
+// Radius sets buffer in km for closest country in coastal areas, a positive buffer expands
+// the positive area whereas a negative buffer reduces it
+func (q CountryCodeQuery) Radius(radius int) CountryCodeQuery {
+	q.radius = radius
+	return q
+}
+
+// Get executes query
+func (q CountryCodeQuery) Get() (string, error) {
+	v := url.Values{}
+	v.Add("type", "xml")
+
+	v.Add("lat", floatToString(q.latitude))
+	v.Add("lng", floatToString(q.longitude))
+
+	if q.radius != 0 {
+		v.Add("radius", intToString(q.radius))
+	}
+
+	if q.lang != "" {
+		v.Add("lang", q.lang)
+	}
+
+	res := countryCodeResponse{}
+	if err := q.query.execute("countryCode", v, &res); err != nil {
+		return "", err
+	}
+
+	return res.Country.Code, res.error()
+}
+
 // Country country info struct
 type Country struct {
 	// ID geoname ID
