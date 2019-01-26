@@ -1,7 +1,7 @@
 package geonames
 
 import (
-	"encoding/json"
+	"encoding/xml"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -12,21 +12,12 @@ type Query struct {
 	userName string
 }
 
-// FindPostalCode find postal code
-func (q Query) FindPostalCode(postalCode string) PostalCodeQuery {
-	return PostalCodeQuery{
-		query:      q,
-		postalCode: postalCode,
-		countries:  []string{},
-	}
-}
-
-// FindPostalCodeByPlaceName find postal code by place name
-func (q Query) FindPostalCodeByPlaceName(placeName string) PostalCodeByPlaceNameQuery {
-	return PostalCodeByPlaceNameQuery{
+// CountryInfo returns country information: capital, population, area in square km, bounding Box of mainland
+// (excluding offshore islands); default - all countries
+func (q Query) CountryInfo(countries ...string) CountryInfoQuery {
+	return CountryInfoQuery{
 		query:     q,
-		placeName: placeName,
-		countries: []string{},
+		countries: countries,
 	}
 }
 
@@ -48,7 +39,7 @@ func (q Query) execute(e string, v url.Values, result interface{}) error {
 		return err
 	}
 
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := xml.Unmarshal(body, &result); err != nil {
 		return err
 	}
 
